@@ -63,6 +63,16 @@ let startTime; // Tid då spelet startas
 // --------------------------------------------------
 // Global setup
 
+// add startGame to the startbutton as an eventlistener.
+startButton.addEventListener('click', startGame);
+startButton.disabled = false;
+// Assing eventlistners to all letterbuttons and disable them.
+for (let i = 0; i < letterButtons.length; i++) {
+  letterButtons[i].disabled = true;
+  letterButtons[i].addEventListener('click', guessLetter);
+}
+
+
 // TODO:
 
 // --------------------------------------------------
@@ -70,6 +80,10 @@ let startTime; // Tid då spelet startas
 // sätt bildnummer till 0, inaktivera startknapp och aktivera bokstavsknappar.
 function startGame() {
   //TODO:
+  console.log('startgame');
+  for (let i = 0; i < letterButtons.length; i++) {
+    letterButtons[i].disabled = false;
+  }
 }
 
 // --------------------------------------------------
@@ -86,6 +100,8 @@ function selectRandomWord() {
 function guessLetter(event) {
   // event är klickhändelsen från en bokstavsknapp
   //TODO:
+  const guessedLetter = event.target.value;
+  console.log('guessLetter', event.target.value);
 }
 
 // --------------------------------------------------
