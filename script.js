@@ -59,6 +59,8 @@ let guessNr; // Nummer för aktuell bild som visas (0-6)
 let randomWord; // Textsträng med det ord som slumpmässigt väljs ur wordList
 let boxElements; // Array med span-element för bokstäverna i ordet
 let startTime; // Tid då spelet startas
+let totalWordLength;
+let correctGuesses = 0;
 
 // --------------------------------------------------
 // Global setup
@@ -73,6 +75,7 @@ for (let i = 0; i < letterButtons.length; i++) {
 }
 
 
+
 // TODO:
 
 // --------------------------------------------------
@@ -80,8 +83,14 @@ for (let i = 0; i < letterButtons.length; i++) {
 // sätt bildnummer till 0, inaktivera startknapp och aktivera bokstavsknappar.
 function startGame() {
   //TODO:
+  if (randomWord) {
+    for (let i = 0; i < randomWord.length; i++) {
+      boxElements[i].remove();
+  }
+  }
   console.log('startgame');
-  guessNr = 0
+  guessNr = 0;
+  correctGuesses = 0;
   hangmanImage.src = ('img/h' + guessNr + '.png');
   console.log(hangmanImage)
   // enable buttons
@@ -98,12 +107,12 @@ function startGame() {
 function selectRandomWord() {
   //TODO:
   randomWord = wordList[0];
+  totalWordLength = randomWord.length;
   const wordBox = document.querySelector('#boxes');
   console.log('Word: ' + randomWord, randomWord.length)
   for (let i = 0; i < randomWord.length; i++) {
     const span = document.createElement('span');
     wordBox.appendChild(span);
-    // boxElements.append(span);
   }
   boxElements = document.querySelectorAll('#boxes span');
   console.log(boxElements)
@@ -116,14 +125,55 @@ function selectRandomWord() {
 function guessLetter(event) {
   // event är klickhändelsen från en bokstavsknapp
   //TODO:
+  // Get letter and disable button.
   const guessedLetter = event.target.value;
+  event.target.disabled = true;
   console.log('guessLetter', event.target.value);
+  let found = false;
+
+  for (let i = 0; i < randomWord.length; i++) {
+    if (guessedLetter == randomWord[i]) {
+      found = true;
+      correctGuesses += 1;
+      console.log(guessedLetter, 'in word!')
+      boxElements[i].innerHTML = guessedLetter
+      boxElements[i].classList.add('marked');
+      console.log(boxElements[i]);
+    } 
+  }
+  if (correctGuesses == totalWordLength) {
+    endGame(false);
+  }
+  if (guessNr == 6) {
+    endGame(true);
+    return;
+  }
+  if (!found) {
+      guessNr += 1;
+      hangmanImage.src = ('img/h' + guessNr + '.png');
+  }
 }
 
 // --------------------------------------------------
 // Avsluta spelet genom att skriva ut ett meddelande och
 // sedan aktivera startknappen och inaktivera bokstavsknapparna
 function endGame(manHanged) {
+  if (manHanged) {
+    // console.log('Ojdå! Gubben blev hängd. Rätt ord var ' + randomWord)
+    const messageElement = document.createElement('p');
+    messageElement.innerHTML = 'Ojdå! Gubben blev hängd. Rätt ord var ' + randomWord;
+    infoElement.appendChild(messageElement);
+
+  } else {
+    console.log('Grattis du lyckades gissa rätt ord!');
+    const messageElement = document.createElement('p');
+    messageElement.innerHTML = 'Grattis du lyckades gissa rätt ord!';
+    infoElement.appendChild(messageElement);
+  }
+
+  for (let i = 0; i < letterButtons.length; i++) {
+      letterButtons[i].disabled = true;
+  }
   // manHanged är true eller false
   //TODO:
 }
