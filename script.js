@@ -59,8 +59,10 @@ let guessNr; // Nummer för aktuell bild som visas (0-6)
 let randomWord; // Textsträng med det ord som slumpmässigt väljs ur wordList
 let boxElements; // Array med span-element för bokstäverna i ordet
 let startTime; // Tid då spelet startas
+// Mina variabler
 let totalWordLength;
 let correctGuesses = 0;
+let prevWord = null;
 
 // --------------------------------------------------
 // Global setup
@@ -83,12 +85,15 @@ for (let i = 0; i < letterButtons.length; i++) {
 // sätt bildnummer till 0, inaktivera startknapp och aktivera bokstavsknappar.
 function startGame() {
   //TODO:
+  const d = new Date;
+  startTime = d.getTime();
   if (randomWord) {
     for (let i = 0; i < randomWord.length; i++) {
       boxElements[i].remove();
   }
   }
   console.log('startgame');
+  infoElement.innerHTML = '';
   guessNr = 0;
   correctGuesses = 0;
   hangmanImage.src = ('img/h' + guessNr + '.png');
@@ -106,7 +111,15 @@ function startGame() {
 // Ordet ska ej vara samma som föregående ord, om man spelar flera gånger
 function selectRandomWord() {
   //TODO:
-  randomWord = wordList[0];
+  const randomNum = Math.floor(Math.random() * (wordList.length - 1));
+  randomWord = wordList[randomNum];
+
+  if (prevWord == randomWord) {
+    console.log('Word duplicate, rerun');
+    selectRandomWord();
+    return;
+  }
+
   totalWordLength = randomWord.length;
   const wordBox = document.querySelector('#boxes');
   console.log('Word: ' + randomWord, randomWord.length)
@@ -115,6 +128,7 @@ function selectRandomWord() {
     wordBox.appendChild(span);
   }
   boxElements = document.querySelectorAll('#boxes span');
+  prevWord = randomWord;
   console.log(boxElements)
 }
 
@@ -158,16 +172,19 @@ function guessLetter(event) {
 // Avsluta spelet genom att skriva ut ett meddelande och
 // sedan aktivera startknappen och inaktivera bokstavsknapparna
 function endGame(manHanged) {
+  const d = new Date;
+  const endTime = d.getTime();
+  const playTime = (endTime - startTime) / 1000; // Endtime is always larger since its the time since 1970 in ms.
   if (manHanged) {
     // console.log('Ojdå! Gubben blev hängd. Rätt ord var ' + randomWord)
     const messageElement = document.createElement('p');
-    messageElement.innerHTML = 'Ojdå! Gubben blev hängd. Rätt ord var ' + randomWord;
+    messageElement.innerHTML = 'Ojdå! Gubben blev hängd. Rätt ord var ' + randomWord + ' Spelet tog: ' + playTime + ' sekunder!';
     infoElement.appendChild(messageElement);
 
   } else {
     console.log('Grattis du lyckades gissa rätt ord!');
     const messageElement = document.createElement('p');
-    messageElement.innerHTML = 'Grattis du lyckades gissa rätt ord!';
+    messageElement.innerHTML = 'Grattis du lyckades gissa rätt ord! Spelet tog: ' + playTime + ' sekunder!';
     infoElement.appendChild(messageElement);
   }
 
