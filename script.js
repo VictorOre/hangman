@@ -81,9 +81,15 @@ for (let i = 0; i < letterButtons.length; i++) {
 function startGame() {
   //TODO:
   console.log('startgame');
+  guessNr = 0
+  hangmanImage.src = ('img/h' + guessNr + '.png');
+  console.log(hangmanImage)
+  // enable buttons
   for (let i = 0; i < letterButtons.length; i++) {
     letterButtons[i].disabled = false;
   }
+  selectRandomWord();
+  
 }
 
 // --------------------------------------------------
@@ -91,6 +97,16 @@ function startGame() {
 // Ordet ska ej vara samma som föregående ord, om man spelar flera gånger
 function selectRandomWord() {
   //TODO:
+  randomWord = wordList[0];
+  const wordBox = document.querySelector('#boxes');
+  console.log('Word: ' + randomWord, randomWord.length)
+  for (let i = 0; i < randomWord.length; i++) {
+    const span = document.createElement('span');
+    wordBox.appendChild(span);
+    // boxElements.append(span);
+  }
+  boxElements = document.querySelectorAll('#boxes span');
+  console.log(boxElements)
 }
 
 // --------------------------------------------------
