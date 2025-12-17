@@ -64,6 +64,8 @@ let totalWordLength;
 let correctGuesses = 0;
 let prevWord = null;
 
+// Jag har kommenterat ut console.log som används för debugging.
+
 // --------------------------------------------------
 // Global setup
 
@@ -84,24 +86,27 @@ for (let i = 0; i < letterButtons.length; i++) {
 // Initiera ett nytt spel. Visa första bilden (h0.png),
 // sätt bildnummer till 0, inaktivera startknapp och aktivera bokstavsknappar.
 function startGame() {
-  //TODO:
+
   const d = new Date;
   startTime = d.getTime();
+
   if (randomWord) {
     for (let i = 0; i < randomWord.length; i++) {
       boxElements[i].remove();
+    }
   }
-  }
-  console.log('startgame');
+  // console.log('startgame');
   infoElement.innerHTML = '';
   guessNr = 0;
   correctGuesses = 0;
   hangmanImage.src = ('img/h' + guessNr + '.png');
-  console.log(hangmanImage)
+
+  // console.log(hangmanImage)
   // enable buttons
   for (let i = 0; i < letterButtons.length; i++) {
     letterButtons[i].disabled = false;
   }
+
   selectRandomWord();
   
 }
@@ -115,21 +120,21 @@ function selectRandomWord() {
   randomWord = wordList[randomNum];
 
   if (prevWord == randomWord) {
-    console.log('Word duplicate, rerun');
+    // console.log('Word duplicate, rerun');
     selectRandomWord();
     return;
   }
 
   totalWordLength = randomWord.length;
   const wordBox = document.querySelector('#boxes');
-  console.log('Word: ' + randomWord, randomWord.length)
+  // console.log('Word: ' + randomWord, randomWord.length)
   for (let i = 0; i < randomWord.length; i++) {
     const span = document.createElement('span');
     wordBox.appendChild(span);
   }
   boxElements = document.querySelectorAll('#boxes span');
   prevWord = randomWord;
-  console.log(boxElements)
+  // console.log(boxElements)
 }
 
 // --------------------------------------------------
@@ -142,21 +147,22 @@ function guessLetter(event) {
   // Get letter and disable button.
   const guessedLetter = event.target.value;
   event.target.disabled = true;
-  console.log('guessLetter', event.target.value);
+  // console.log('guessLetter', event.target.value);
   let found = false;
 
   for (let i = 0; i < randomWord.length; i++) {
     if (guessedLetter == randomWord[i]) {
       found = true;
       correctGuesses += 1;
-      console.log(guessedLetter, 'in word!')
+      // console.log(guessedLetter, 'in word!')
       boxElements[i].innerHTML = guessedLetter
       boxElements[i].classList.add('marked');
-      console.log(boxElements[i]);
+      // console.log(boxElements[i]);
     } 
   }
   if (correctGuesses == totalWordLength) {
     endGame(false);
+    return;
   }
   if (guessNr == 6) {
     endGame(true);
@@ -166,6 +172,7 @@ function guessLetter(event) {
       guessNr += 1;
       hangmanImage.src = ('img/h' + guessNr + '.png');
   }
+
 }
 
 // --------------------------------------------------
@@ -182,7 +189,7 @@ function endGame(manHanged) {
     infoElement.appendChild(messageElement);
 
   } else {
-    console.log('Grattis du lyckades gissa rätt ord!');
+    // console.log('Grattis du lyckades gissa rätt ord!');
     const messageElement = document.createElement('p');
     messageElement.innerHTML = 'Grattis du lyckades gissa rätt ord! Spelet tog: ' + playTime + ' sekunder!';
     infoElement.appendChild(messageElement);
@@ -192,5 +199,5 @@ function endGame(manHanged) {
       letterButtons[i].disabled = true;
   }
   // manHanged är true eller false
-  //TODO:
+
 }
